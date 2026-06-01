@@ -33,12 +33,15 @@ GitHub Repo Polisher is a small maintainer tool for checking those first-impress
 
 ## Screenshots
 
-Real screenshots should be captured from the running app after the first polished deployment:
+These screenshots were captured from the app running locally with `npm run dev`.
 
-- `docs/screenshot-dashboard.png` - main score dashboard
-- `docs/screenshot-readme-generator.png` - generated README template
+### Dashboard
 
-Do not add mock screenshots as if they were real application captures.
+![GitHub Repo Polisher dashboard](docs/screenshot-dashboard.png)
+
+### README Generator
+
+![Generated README template view](docs/screenshot-readme-generator.png)
 
 ## Tech Stack
 
