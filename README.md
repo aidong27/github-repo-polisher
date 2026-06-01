@@ -1,5 +1,7 @@
 # GitHub Repo Polisher
 
+[Live demo](https://aidong27.github.io/github-repo-polisher/)
+
 GitHub Repo Polisher is a browser-only dashboard that audits a public GitHub repository and turns the result into practical README improvement suggestions.
 
 It checks README coverage, repository metadata, engineering files, demo readiness, and open-source friendliness. It can read public GitHub repository information in the browser, and it also includes mock repositories for offline or rate-limited demos.
