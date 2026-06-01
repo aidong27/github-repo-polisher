@@ -539,13 +539,29 @@ input:disabled {
   background: var(--surface);
 }
 
+.check-copy {
+  min-width: 0;
+}
+
 .check-list p {
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.check-list span {
+.check-list .check-fix {
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 0.88rem;
+}
+
+.check-fix b {
+  color: var(--accent);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.check-list .check-status {
   flex: 0 0 auto;
   border-radius: 999px;
   padding: 4px 8px;
@@ -553,12 +569,12 @@ input:disabled {
   font-weight: 800;
 }
 
-.check-pass span {
+.check-pass .check-status {
   color: var(--accent-strong);
   background: var(--accent-soft);
 }
 
-.check-fail span {
+.check-fail .check-status {
   color: var(--danger);
   background: var(--danger-soft);
 }
@@ -701,7 +717,7 @@ input:disabled {
     flex-direction: column;
   }
 
-  .check-list span {
+  .check-list .check-status {
     align-self: flex-start;
   }
 }

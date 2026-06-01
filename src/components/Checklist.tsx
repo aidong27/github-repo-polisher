@@ -43,11 +43,14 @@ export function Checklist({ result }: ChecklistProps) {
               <ul className="check-list">
                 {items.map((item) => (
                   <li key={item.id} className={item.passed ? 'check-pass' : 'check-fail'}>
-                    <div>
+                    <div className="check-copy">
                       <strong>{item.label}</strong>
                       <p>{item.detail}</p>
+                      <p className="check-fix">
+                        <b>Guidance:</b> {item.fix}
+                      </p>
                     </div>
-                    <span>{item.passed ? 'Present' : 'Missing'}</span>
+                    <span className="check-status">{item.passed ? 'Present' : 'Missing'}</span>
                   </li>
                 ))}
               </ul>

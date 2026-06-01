@@ -79,6 +79,7 @@ export interface ChecklistItem {
   label: string;
   passed: boolean;
   detail: string;
+  fix: string;
 }
 
 export type SuggestionPriority = 'high' | 'medium' | 'optional';
