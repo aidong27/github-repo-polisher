@@ -2,21 +2,26 @@
 
 GitHub Repo Polisher is a browser-only dashboard that audits a public GitHub repository and turns the result into practical README improvement suggestions.
 
-It checks README coverage, repository metadata, engineering files, demo readiness, and open-source friendliness. It can call the public GitHub REST API without a token, and it also includes mock repositories for offline or rate-limited demos.
+It checks README coverage, repository metadata, engineering files, demo readiness, and open-source friendliness. It can read public GitHub repository information in the browser, and it also includes mock repositories for offline or rate-limited demos.
 
-## Screenshots
+## Why I Built This
 
-Screenshot placeholders:
+Small open-source projects often work correctly but look unfinished to new visitors. A missing screenshot, unclear setup command, weak roadmap, or absent contribution guide can make a useful project feel abandoned.
 
-- `docs/screenshot-dashboard.png` - main score dashboard
-- `docs/screenshot-readme-generator.png` - generated README template
+GitHub Repo Polisher is a small maintainer tool for checking those first-impression details before sharing a repository publicly.
 
-Add real screenshots after the first deployment.
+## Current Status
+
+- Status: public early release
+- Version: `0.1.0`
+- Runtime: browser-only frontend
+- Primary audience: students, indie developers, and small open-source maintainers
+- Main focus: practical repository polish, not automated code-quality judgment
 
 ## Features
 
 - Parse public GitHub URLs such as `https://github.com/user/repo`
-- Fetch public repository metadata without storing tokens, cookies, or API keys
+- Fetch public repository metadata without storing account credentials
 - Check for README, LICENSE, `package.json`, GitHub Actions, and contribution guidance
 - Detect README sections for Demo, Screenshots, Features, Tech Stack, Getting Started, Roadmap, and License
 - Detect screenshots and install/run commands in README content
@@ -25,6 +30,15 @@ Add real screenshots after the first deployment.
 - Generate a copy-ready README template based on the repository name
 - Provide two built-in sample repositories for offline use
 - Support dark mode and responsive layouts
+
+## Screenshots
+
+Real screenshots should be captured from the running app after the first polished deployment:
+
+- `docs/screenshot-dashboard.png` - main score dashboard
+- `docs/screenshot-readme-generator.png` - generated README template
+
+Do not add mock screenshots as if they were real application captures.
 
 ## Tech Stack
 
@@ -56,9 +70,17 @@ Run lint checks:
 npm run lint
 ```
 
+## Maintenance Docs
+
+- [Contributing Guide](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+- [Public Roadmap](docs/roadmap.md)
+- [Release Checklist](docs/release-checklist.md)
+
 ## Privacy
 
-GitHub Repo Polisher is frontend-only. Repository analysis happens in the browser. The app does not upload analysis results to any server and does not contain or request API keys, tokens, cookies, or private credentials.
+GitHub Repo Polisher is frontend-only. Repository analysis happens in the browser. The app does not upload analysis results to a project server and does not require account login for the default public-repository workflow.
 
 ## Deploy to GitHub Pages
 
@@ -71,7 +93,7 @@ npm install
 npm run build
 ```
 
-Then publish the `dist` directory with your preferred GitHub Pages workflow or tool. For example, you can use `actions/deploy-pages` in a separate deployment workflow after the CI workflow passes.
+Then publish the `dist` directory with your preferred GitHub Pages workflow. For example, you can use `actions/deploy-pages` in a separate deployment workflow after the CI workflow passes.
 
 Repository settings path:
 
@@ -82,8 +104,11 @@ Repository settings path:
 
 ## Roadmap
 
-- Add optional scoring presets for web apps, libraries, CLIs, and documentation sites
-- Detect more ecosystem files such as `pnpm-lock.yaml`, `pyproject.toml`, and `Dockerfile`
+Near-term work is tracked in [docs/roadmap.md](docs/roadmap.md). Current priorities:
+
+- Add optional scoring presets for web apps, libraries, CLIs, documentation sites, and small games
+- Add real screenshots from the deployed app
+- Add example before-and-after audit reports
 - Add export to Markdown or JSON
 - Add rule explanations with direct README patch suggestions
 - Add GitHub Pages deployment workflow template generation
