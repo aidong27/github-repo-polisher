@@ -10,9 +10,9 @@ GitHub Repo Polisher is a small open-source maintainer tool. The roadmap focuses
 - Add a short demo walkthrough to the README.
 - Document which parts of the audit are heuristic and which are direct file checks.
 
-### Scoring presets
+### Scoring preset refinement
 
-Add optional scoring profiles for different repository types:
+The app now includes optional scoring profiles for different repository types. Future work should tune the weights against more real examples:
 
 - Browser app
 - Static site
@@ -32,20 +32,11 @@ Create example reports that show how maintainers can improve a repository over t
 
 ## Mid Term
 
-### Export support
+### Export support refinement
 
-- Export audit results as Markdown.
-- Export audit results as JSON.
-- Copy a README improvement checklist.
-
-### Better rule explanations
-
-Each rule should explain:
-
-- What was checked.
-- Why it matters.
-- How to fix it.
-- Whether it is required or optional.
+- Add issue-plan export for GitHub Issues or project boards.
+- Add before-and-after report examples for maintainers.
+- Add direct README patch suggestions alongside the existing rule explanations.
 
 ## Long Term
 

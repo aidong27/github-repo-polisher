@@ -28,7 +28,10 @@ GitHub Repo Polisher is a small maintainer tool for checking those first-impress
 - Detect README sections for Demo, Screenshots, Features, Tech Stack, Getting Started, Roadmap, and License
 - Detect screenshots and install/run commands in README content
 - Score repositories across five categories for a total of 100 points
+- Choose scoring presets for browser apps, static sites, libraries, CLIs, documentation sites, and small games
 - Group recommendations by high priority, medium priority, and optional polish
+- Expand rule details to see what was checked, why it matters, how to fix it, and whether the check is heuristic
+- Copy or download audit reports as Markdown, and download structured JSON reports
 - Generate a copy-ready README template based on the repository name
 - Provide two built-in sample repositories for offline use
 - Support dark mode and responsive layouts
@@ -111,11 +114,10 @@ Repository settings path:
 
 Near-term work is tracked in [docs/roadmap.md](docs/roadmap.md). Current priorities:
 
-- Add optional scoring presets for web apps, libraries, CLIs, documentation sites, and small games
+- Refine scoring presets with more real repository examples
 - Add real screenshots from the deployed app
 - Add example before-and-after audit reports
-- Add export to Markdown or JSON
-- Add rule explanations with direct README patch suggestions
+- Add direct README patch suggestions
 - Add GitHub Pages deployment workflow template generation
 
 ## License
