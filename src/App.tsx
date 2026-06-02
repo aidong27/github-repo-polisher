@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Checklist } from './components/Checklist';
+import { ExportPanel } from './components/ExportPanel';
 import { PresetSelector } from './components/PresetSelector';
 import { ReadmeGenerator } from './components/ReadmeGenerator';
 import { RepoInput } from './components/RepoInput';
@@ -158,6 +159,8 @@ export function App() {
         <PresetSelector selectedPresetId={scoringPresetId} onChange={setScoringPresetId} />
 
         <ScoreCard result={result} />
+
+        <ExportPanel result={result} />
 
         <div className="content-grid">
           <Checklist result={result} />

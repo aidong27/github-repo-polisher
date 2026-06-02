@@ -264,11 +264,17 @@ input:disabled {
 }
 
 .error-box,
-.inline-alert {
+.inline-alert,
+.inline-success {
   border: 1px solid color-mix(in srgb, var(--danger) 50%, var(--border));
   border-radius: var(--radius);
   color: var(--text);
   background: var(--danger-soft);
+}
+
+.inline-success {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  background: var(--accent-soft);
 }
 
 .error-box {
@@ -279,11 +285,13 @@ input:disabled {
 }
 
 .error-box p,
-.inline-alert {
+.inline-alert,
+.inline-success {
   margin: 0;
 }
 
-.inline-alert {
+.inline-alert,
+.inline-success {
   padding: 10px 12px;
 }
 
@@ -432,6 +440,32 @@ input:disabled {
 .score-panel {
   display: grid;
   gap: 20px;
+}
+
+.export-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.export-panel .section-heading {
+  margin-bottom: 0;
+}
+
+.export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.export-actions button {
+  white-space: nowrap;
+}
+
+.export-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .score-overview {
@@ -816,12 +850,14 @@ input:disabled {
 
   .repo-form-row button,
   .sample-actions button,
+  .export-actions button,
   .result-actions a,
   .section-heading button {
     width: 100%;
   }
 
   .result-actions,
+  .export-actions,
   .sample-actions {
     width: 100%;
   }
