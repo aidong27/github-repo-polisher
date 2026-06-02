@@ -67,7 +67,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -167,7 +168,8 @@ a {
 .secondary-button:focus-visible,
 .icon-button:focus-visible,
 input:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+select:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
   outline-offset: 2px;
 }
@@ -374,6 +376,57 @@ input:disabled {
 .panel {
   margin-bottom: 16px;
   padding: 20px;
+}
+
+.preset-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: 10px 18px;
+  align-items: end;
+}
+
+.preset-panel h2 {
+  margin: 4px 0 0;
+  font-size: 1.35rem;
+}
+
+.preset-control {
+  display: grid;
+  gap: 8px;
+}
+
+.preset-control select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  color: var(--text);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.preset-control select:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+}
+
+.preset-description,
+.preset-focus {
+  margin: 0;
+  color: var(--muted);
+}
+
+.preset-description {
+  grid-column: 1 / -1;
+}
+
+.preset-focus {
+  grid-column: 1 / -1;
+  font-size: 0.92rem;
+}
+
+.preset-focus strong {
+  color: var(--text);
 }
 
 .score-panel {
@@ -644,7 +697,8 @@ input:disabled {
 
 @media (max-width: 980px) {
   .hero,
-  .content-grid {
+  .content-grid,
+  .preset-panel {
     grid-template-columns: 1fr;
   }
 
