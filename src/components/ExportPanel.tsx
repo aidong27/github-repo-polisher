@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   buildJsonReportText,
   buildMarkdownReport,
+  copyTextToClipboard,
   downloadTextFile,
   getReportBaseFilename,
 } from '../lib/exportReports';
@@ -11,10 +12,11 @@ interface ExportPanelProps {
   result: AnalysisResult;
 }
 
-type ExportState =
-  | { status: 'idle'; message: string }
-  | { status: 'success'; message: string }
-  | { status: 'failed'; message: string };
+type ExportState = {
+  status: 'idle' | 'success' | 'failed';
+  message: string;
+  fallbackMarkdown?: string;
+};
 
 const idleState: ExportState = { status: 'idle', message: '' };
 
@@ -22,14 +24,17 @@ export function ExportPanel({ result }: ExportPanelProps) {
   const [exportState, setExportState] = useState<ExportState>(idleState);
 
   async function handleCopyMarkdown() {
+    const generatedAt = new Date().toISOString();
+    const markdownReport = buildMarkdownReport(result, generatedAt);
+
     try {
-      const generatedAt = new Date().toISOString();
-      await navigator.clipboard.writeText(buildMarkdownReport(result, generatedAt));
+      await copyTextToClipboard(markdownReport);
       showMessage({ status: 'success', message: 'Markdown report copied.' });
     } catch {
       showMessage({
         status: 'failed',
-        message: 'Clipboard access failed. Try Download Markdown instead.',
+        message: 'Clipboard access failed. Select the Markdown report below or download it.',
+        fallbackMarkdown: markdownReport,
       });
     }
   }
@@ -99,6 +104,14 @@ export function ExportPanel({ result }: ExportPanelProps) {
         >
           {exportState.message}
         </p>
+      ) : null}
+      {exportState.fallbackMarkdown ? (
+        <textarea
+          className="export-fallback"
+          aria-label="Markdown report fallback"
+          readOnly
+          value={exportState.fallbackMarkdown}
+        />
       ) : null}
     </section>
   );

@@ -208,6 +208,15 @@ export function downloadTextFile(filename: string, content: string, mimeType: st
   window.setTimeout(() => window.URL.revokeObjectURL(url), 0);
 }
 
+export async function copyTextToClipboard(content: string): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(content);
+    return;
+  } catch {
+    copyTextWithSelectionFallback(content);
+  }
+}
+
 export function getReportBaseFilename(result: AnalysisResult): string {
   return `${result.repo.fullName.replace(/[^a-z0-9._-]+/gi, '-').toLowerCase()}-audit`;
 }
@@ -221,4 +230,26 @@ function formatDateTime(value: string): string {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(value));
+}
+
+function copyTextWithSelectionFallback(content: string): void {
+  const textarea = document.createElement('textarea');
+
+  textarea.value = content;
+  textarea.readOnly = true;
+  textarea.style.position = 'fixed';
+  textarea.style.inset = '0 auto auto 0';
+  textarea.style.width = '1px';
+  textarea.style.height = '1px';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  const copied = document.execCommand('copy');
+
+  textarea.remove();
+
+  if (!copied) {
+    throw new Error('Clipboard copy failed.');
+  }
 }

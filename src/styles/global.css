@@ -468,6 +468,20 @@ input:disabled {
   font-size: 0.92rem;
 }
 
+.export-fallback {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  color: var(--text);
+  background: var(--surface);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 .score-overview {
   display: flex;
   align-items: center;
