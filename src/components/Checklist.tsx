@@ -1,4 +1,6 @@
 import type { AnalysisResult, ChecklistItem } from '../types/repo';
+import { getRuleExplanation } from '../lib/ruleExplanations';
+import { RuleDetails } from './RuleDetails';
 
 interface ChecklistProps {
   result: AnalysisResult;
@@ -49,6 +51,7 @@ export function Checklist({ result }: ChecklistProps) {
                       <p className="check-fix">
                         <b>Guidance:</b> {item.fix}
                       </p>
+                      <RuleDetails explanation={getRuleExplanation(item.id)} />
                     </div>
                     <span className="check-status">{item.passed ? 'Present' : 'Missing'}</span>
                   </li>

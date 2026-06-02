@@ -1,11 +1,17 @@
 import { generateReadmeTemplate } from './readmeTemplate';
+import { DEFAULT_SCORING_PRESET_ID, getScoringPreset } from './scoringPresets';
 import type {
   AnalysisResult,
+  CategoryWeightMap,
   ChecklistItem,
+  ChecklistRuleId,
   ReadmeSignals,
   RepositoryData,
   ScoreCategory,
+  ScoringPreset,
+  ScoringPresetId,
   Suggestion,
+  SuggestionId,
 } from '../types/repo';
 
 type SectionKey = keyof Omit<ReadmeSignals, 'hasImage' | 'hasInstallCommands'>;
@@ -26,7 +32,11 @@ const sectionPatterns: Record<SectionKey, RegExp[]> = {
   hasContributingSection: [/^#{1,6}\s*(contributing|contribution|development)\b/im],
 };
 
-export function analyzeRepository(data: RepositoryData): AnalysisResult {
+export function analyzeRepository(
+  data: RepositoryData,
+  presetId: ScoringPresetId = DEFAULT_SCORING_PRESET_ID,
+): AnalysisResult {
+  const scoringPreset = getScoringPreset(presetId);
   const readme = data.readme?.content || '';
   const signals = getReadmeSignals(readme);
   const hasPackageScripts = Boolean(
@@ -36,7 +46,8 @@ export function analyzeRepository(data: RepositoryData): AnalysisResult {
         data.packageJson.scripts.build),
   );
 
-  const categories: ScoreCategory[] = [
+  const categories = applyPresetWeights(
+    [
     {
       id: 'readme',
       label: 'README completeness',
@@ -95,15 +106,18 @@ export function analyzeRepository(data: RepositoryData): AnalysisResult {
         points(signals.hasRoadmapSection, 1),
       description: 'License, contribution path, and future direction.',
     },
-  ];
+    ],
+    scoringPreset.categoryWeights,
+  );
 
   const checks = buildChecklist(data, signals, hasPackageScripts);
-  const suggestions = buildSuggestions(data, signals, hasPackageScripts);
+  const suggestions = buildSuggestions(data, signals, hasPackageScripts, scoringPreset);
   const scoreTotal = categories.reduce((total, category) => total + category.score, 0);
 
   return {
     source: data.source,
     repo: data.repo,
+    scoringPreset,
     scoreTotal,
     categories,
     checks,
@@ -272,11 +286,14 @@ function buildSuggestions(
   data: RepositoryData,
   signals: ReadmeSignals,
   hasPackageScripts: boolean,
+  scoringPreset: ScoringPreset,
 ): Suggestion[] {
   const suggestions: Suggestion[] = [];
 
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'create-a-complete-readme',
     !data.files.readme,
     'high',
     'Create a complete README',
@@ -285,6 +302,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'add-reproducible-setup-commands',
     data.files.readme && (!signals.hasGettingStartedSection || !signals.hasInstallCommands),
     'high',
     'Add reproducible setup commands',
@@ -293,6 +312,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'add-a-license-file',
     !data.files.license,
     'high',
     'Add a LICENSE file',
@@ -301,6 +322,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'write-a-concise-repository-description',
     !data.repo.description,
     'medium',
     'Write a concise repository description',
@@ -309,6 +332,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'add-github-topics',
     data.repo.topics.length === 0,
     'medium',
     'Add GitHub topics',
@@ -317,6 +342,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'expose-a-demo-link',
     !data.repo.homepage && !signals.hasDemoSection,
     'medium',
     'Expose a demo link',
@@ -325,6 +352,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'add-screenshots',
     !signals.hasImage && !signals.hasScreenshotSection,
     'medium',
     'Add screenshots',
@@ -333,6 +362,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'make-project-commands-obvious',
     !data.files.packageJson || !hasPackageScripts,
     'medium',
     'Make project commands obvious',
@@ -341,6 +372,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'add-a-ci-workflow',
     !data.files.workflows,
     'optional',
     'Add a CI workflow',
@@ -349,6 +382,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'document-the-roadmap',
     !signals.hasRoadmapSection,
     'optional',
     'Document the roadmap',
@@ -357,6 +392,8 @@ function buildSuggestions(
   );
   addSuggestion(
     suggestions,
+    scoringPreset,
+    'add-contribution-guidance',
     !data.files.contributing && !signals.hasContributingSection,
     'optional',
     'Add contribution guidance',
@@ -392,8 +429,24 @@ function points(condition: boolean, value: number): number {
   return condition ? value : 0;
 }
 
+function applyPresetWeights(
+  categories: ScoreCategory[],
+  categoryWeights: CategoryWeightMap,
+): ScoreCategory[] {
+  return categories.map((category) => {
+    const max = categoryWeights[category.id];
+    const score = category.max > 0 ? Math.round((category.score / category.max) * max) : 0;
+
+    return {
+      ...category,
+      max,
+      score: Math.min(score, max),
+    };
+  });
+}
+
 function item(
-  id: string,
+  id: ChecklistRuleId,
   group: ChecklistItem['group'],
   label: string,
   passed: boolean,
@@ -405,6 +458,8 @@ function item(
 
 function addSuggestion(
   suggestions: Suggestion[],
+  scoringPreset: ScoringPreset,
+  id: SuggestionId,
   condition: boolean,
   priority: Suggestion['priority'],
   title: string,
@@ -415,9 +470,11 @@ function addSuggestion(
     return;
   }
 
+  const presetPriority = scoringPreset.suggestionPriorityOverrides?.[id];
+
   suggestions.push({
-    id: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    priority,
+    id,
+    priority: presetPriority || priority,
     title,
     reason,
     action,

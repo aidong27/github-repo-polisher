@@ -1,4 +1,6 @@
 import type { AnalysisResult, Suggestion, SuggestionPriority } from '../types/repo';
+import { getRuleExplanation } from '../lib/ruleExplanations';
+import { RuleDetails } from './RuleDetails';
 
 interface SuggestionListProps {
   result: AnalysisResult;
@@ -52,6 +54,8 @@ export function SuggestionList({ result }: SuggestionListProps) {
 }
 
 function SuggestionCard({ suggestion }: { suggestion: Suggestion }) {
+  const explanation = getRuleExplanation(suggestion.id);
+
   return (
     <article className={`suggestion-card suggestion-${suggestion.priority}`}>
       <div className="suggestion-title-row">
@@ -64,6 +68,7 @@ function SuggestionCard({ suggestion }: { suggestion: Suggestion }) {
       <p>
         <strong>Suggested action:</strong> {suggestion.action}
       </p>
+      <RuleDetails explanation={explanation} priority={suggestion.priority} />
     </article>
   );
 }

@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Checklist } from './components/Checklist';
+import { ExportPanel } from './components/ExportPanel';
+import { PresetSelector } from './components/PresetSelector';
 import { ReadmeGenerator } from './components/ReadmeGenerator';
 import { RepoInput } from './components/RepoInput';
 import { ScoreCard } from './components/ScoreCard';
@@ -8,15 +10,23 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { analyzeRepository } from './lib/analyzer';
 import { GitHubApiError, fetchRepositoryData, parseGitHubRepoUrl } from './lib/github';
 import { mockRepositories } from './lib/mockData';
-import type { AnalysisResult } from './types/repo';
+import { DEFAULT_SCORING_PRESET_ID } from './lib/scoringPresets';
+import type { RepositoryData, ScoringPresetId } from './types/repo';
 
 type Theme = 'light' | 'dark';
 
 export function App() {
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
-  const [result, setResult] = useState<AnalysisResult>(() => analyzeRepository(mockRepositories[1]));
+  const [repositoryData, setRepositoryData] = useState<RepositoryData>(() => mockRepositories[1]);
+  const [scoringPresetId, setScoringPresetId] = useState<ScoringPresetId>(
+    DEFAULT_SCORING_PRESET_ID,
+  );
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const result = useMemo(
+    () => analyzeRepository(repositoryData, scoringPresetId),
+    [repositoryData, scoringPresetId],
+  );
 
   const repositoryMeta = useMemo(() => {
     const updated = result.repo.updatedAt
@@ -51,7 +61,7 @@ export function App() {
 
     try {
       const data = await fetchRepositoryData(parsed);
-      setResult(analyzeRepository(data));
+      setRepositoryData(data);
     } catch (caughtError) {
       setError(getFriendlyError(caughtError));
     } finally {
@@ -61,7 +71,7 @@ export function App() {
 
   function handleUseMock(index: number) {
     setError(null);
-    setResult(analyzeRepository(mockRepositories[index]));
+    setRepositoryData(mockRepositories[index]);
   }
 
   return (
@@ -107,16 +117,12 @@ export function App() {
               <strong>100 pts</strong>
             </div>
             <div className="hero-metrics">
-              <span>README</span>
-              <strong>35</strong>
-              <span>Metadata</span>
-              <strong>20</strong>
-              <span>Engineering</span>
-              <strong>20</strong>
-              <span>Showcase</span>
-              <strong>15</strong>
-              <span>Open source</span>
-              <strong>10</strong>
+              {result.categories.map((category) => (
+                <Fragment key={category.id}>
+                  <span>{category.label.replace(' completeness', '').replace(' files', '')}</span>
+                  <strong>{category.max}</strong>
+                </Fragment>
+              ))}
             </div>
           </aside>
         </section>
@@ -150,7 +156,11 @@ export function App() {
           )}
         </div>
 
+        <PresetSelector selectedPresetId={scoringPresetId} onChange={setScoringPresetId} />
+
         <ScoreCard result={result} />
+
+        <ExportPanel result={result} />
 
         <div className="content-grid">
           <Checklist result={result} />

@@ -66,6 +66,26 @@ export interface ScoreCategory {
   description: string;
 }
 
+export type CategoryWeightMap = Record<ScoreCategoryId, number>;
+
+export type ScoringPresetId =
+  | 'general'
+  | 'browser-app'
+  | 'static-site'
+  | 'javascript-typescript-library'
+  | 'cli-tool'
+  | 'documentation-site'
+  | 'small-game-project';
+
+export interface ScoringPreset {
+  id: ScoringPresetId;
+  label: string;
+  description: string;
+  focus: string;
+  categoryWeights: CategoryWeightMap;
+  suggestionPriorityOverrides?: Partial<Record<SuggestionId, SuggestionPriority>>;
+}
+
 export type CheckGroup =
   | 'README'
   | 'Project metadata'
@@ -73,8 +93,28 @@ export type CheckGroup =
   | 'Showcase'
   | 'Open source';
 
+export type ChecklistRuleId =
+  | 'readme-file'
+  | 'demo-section'
+  | 'screenshots-section'
+  | 'features-section'
+  | 'tech-stack-section'
+  | 'getting-started-section'
+  | 'readme-images'
+  | 'install-commands'
+  | 'roadmap-section'
+  | 'license-section'
+  | 'repo-description'
+  | 'repo-topics'
+  | 'repo-homepage'
+  | 'license-file'
+  | 'package-json'
+  | 'package-scripts'
+  | 'github-actions'
+  | 'contributing-guide';
+
 export interface ChecklistItem {
-  id: string;
+  id: ChecklistRuleId;
   group: CheckGroup;
   label: string;
   passed: boolean;
@@ -84,12 +124,38 @@ export interface ChecklistItem {
 
 export type SuggestionPriority = 'high' | 'medium' | 'optional';
 
+export type SuggestionId =
+  | 'create-a-complete-readme'
+  | 'add-reproducible-setup-commands'
+  | 'add-a-license-file'
+  | 'write-a-concise-repository-description'
+  | 'add-github-topics'
+  | 'expose-a-demo-link'
+  | 'add-screenshots'
+  | 'make-project-commands-obvious'
+  | 'add-a-ci-workflow'
+  | 'document-the-roadmap'
+  | 'add-contribution-guidance';
+
 export interface Suggestion {
-  id: string;
+  id: SuggestionId;
   priority: SuggestionPriority;
   title: string;
   reason: string;
   action: string;
+}
+
+export type AuditRuleId = ChecklistRuleId | SuggestionId;
+
+export type RuleRequirement = 'required' | 'optional';
+
+export interface RuleExplanation {
+  checked: string;
+  why: string;
+  fix: string;
+  priority: SuggestionPriority;
+  requirement: RuleRequirement;
+  heuristic: boolean;
 }
 
 export interface ReadmeSignals {
@@ -108,6 +174,7 @@ export interface ReadmeSignals {
 export interface AnalysisResult {
   source: DataSource;
   repo: GitHubRepository;
+  scoringPreset: ScoringPreset;
   scoreTotal: number;
   categories: ScoreCategory[];
   checks: ChecklistItem[];
