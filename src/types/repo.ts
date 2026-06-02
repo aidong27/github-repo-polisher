@@ -93,8 +93,28 @@ export type CheckGroup =
   | 'Showcase'
   | 'Open source';
 
+export type ChecklistRuleId =
+  | 'readme-file'
+  | 'demo-section'
+  | 'screenshots-section'
+  | 'features-section'
+  | 'tech-stack-section'
+  | 'getting-started-section'
+  | 'readme-images'
+  | 'install-commands'
+  | 'roadmap-section'
+  | 'license-section'
+  | 'repo-description'
+  | 'repo-topics'
+  | 'repo-homepage'
+  | 'license-file'
+  | 'package-json'
+  | 'package-scripts'
+  | 'github-actions'
+  | 'contributing-guide';
+
 export interface ChecklistItem {
-  id: string;
+  id: ChecklistRuleId;
   group: CheckGroup;
   label: string;
   passed: boolean;
@@ -123,6 +143,19 @@ export interface Suggestion {
   title: string;
   reason: string;
   action: string;
+}
+
+export type AuditRuleId = ChecklistRuleId | SuggestionId;
+
+export type RuleRequirement = 'required' | 'optional';
+
+export interface RuleExplanation {
+  checked: string;
+  why: string;
+  fix: string;
+  priority: SuggestionPriority;
+  requirement: RuleRequirement;
+  heuristic: boolean;
 }
 
 export interface ReadmeSignals {

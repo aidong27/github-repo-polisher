@@ -4,6 +4,7 @@ import type {
   AnalysisResult,
   CategoryWeightMap,
   ChecklistItem,
+  ChecklistRuleId,
   ReadmeSignals,
   RepositoryData,
   ScoreCategory,
@@ -445,7 +446,7 @@ function applyPresetWeights(
 }
 
 function item(
-  id: string,
+  id: ChecklistRuleId,
   group: ChecklistItem['group'],
   label: string,
   passed: boolean,
